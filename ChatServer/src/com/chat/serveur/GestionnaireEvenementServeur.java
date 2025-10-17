@@ -52,6 +52,17 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
 
                 //Ajoutez ici d’autres case pour gérer d’autres commandes.
 
+                case "MSG":
+                    aliasExpediteur = cnx.getAlias(); //celui qui a send le msg
+                    msg = evenement.getArgument(); //msg en tant que tel
+                    String messageComplet = aliasExpediteur + ">>" + msg; //format demande par vous (prof)
+
+                    //send a tous sauf expediteur
+                    serveur.envoyerATousSauf(messageComplet, aliasExpediteur);
+
+                    //QUESTION 2 (plus tard, serveur.ajouterHistorique(messageComplet)
+                    break;
+
                 default: //Renvoyer le texte recu convertit en majuscules :
                     msg = (evenement.getType() + " " + evenement.getArgument()).toUpperCase();
                     cnx.envoyer(msg);
