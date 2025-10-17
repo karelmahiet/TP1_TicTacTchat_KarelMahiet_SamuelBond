@@ -35,7 +35,16 @@ public class Main {
 		System.out.println("Vous etes connectes au serveur à l'adresse " + client.getAdrServeur()
 				+ " sur le port " + client.getPortServeur());
 
+		//demande nom (alias)
+		System.out.print("Entrez votre alias : ");
+		String alias = clavier.nextLine().trim();
+
+		//envoyer alias au serveur
+		client.envoyer(alias);
+
+		System.out.println("Bienvenue " + alias + " !");
 		System.out.println("Saisissez vos textes (EXIT pour quitter) :");
+
 		do {
 			saisie = clavier.nextLine();
 			client.envoyer(saisie);

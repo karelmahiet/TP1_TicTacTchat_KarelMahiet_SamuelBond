@@ -85,6 +85,25 @@ public class ServeurChat extends Serveur {
             s+=cnx.getAlias()+":";
         return s;
     }
+
+    /**
+     * QUESTION 1
+     * Envoie un message a tous les clients sauf expediteur
+     *
+     * @param str message a send
+     * @param aliasExpediteur alias de celui qui a send le message
+     */
+
+    public void envoyerATousSauf(String str, String aliasExpediteur){
+        synchronized (connectes) {
+            for (Connexion c : connectes) {
+                if (!c.getAlias().equals(aliasExpediteur)) {
+                    c.envoyer(str);
+                }
+            }
+        }
+    }
+
     /**
      * Retourne la liste des messages de l'historique de chat dans une chaîne
      * de caractères.
