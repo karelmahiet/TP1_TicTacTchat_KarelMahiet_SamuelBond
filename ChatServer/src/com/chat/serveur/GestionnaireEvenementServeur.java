@@ -60,7 +60,8 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                     //send a tous sauf expediteur
                     serveur.envoyerATousSauf(messageComplet, aliasExpediteur);
 
-                    //QUESTION 2 (plus tard, serveur.ajouterHistorique(messageComplet)
+                    //QUESTION 2
+                    serveur.ajouterHistorique(messageComplet);
                     break;
 
                 default: //Renvoyer le texte recu convertit en majuscules :
