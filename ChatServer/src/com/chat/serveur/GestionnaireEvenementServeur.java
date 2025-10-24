@@ -4,6 +4,8 @@ import com.commun.evenement.Evenement;
 import com.commun.evenement.GestionnaireEvenement;
 import com.commun.net.Connexion;
 
+import java.util.Vector;
+
 /**
  * Cette classe représente un gestionnaire d'événement d'un serveur. Lorsqu'un serveur reçoit un texte d'un client,
  * il crée un événement à partir du texte reçu et alerte ce gestionnaire qui réagit en gérant l'événement.
@@ -35,6 +37,7 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
         Connexion cnx;
         String msg, typeEvenement, aliasExpediteur;
         ServeurChat serveur = (ServeurChat) this.serveur;
+        Vector<Invitation> listeInvitation = new Vector<>(); //pour stocké les invitations
 
         if (source instanceof Connexion) {
             cnx = (Connexion) source;
@@ -62,6 +65,25 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
 
                     //QUESTION 2
                     serveur.ajouterHistorique(messageComplet);
+                    break;
+
+                case "JOIN":
+                    String alias1, alias2;
+                    alias1 = cnx.getAlias();
+                    alias2 = evenement.getArgument();
+                    for (Invitation inv : listeInvitation) {
+                        if (inv.getHost().equals(alias1) && inv.getGuest().equals(alias2)) {
+                            //crée le salon privé
+                            break;
+                        }
+                        else{
+                            Invitation invitation = new Invitation(alias1, alias2);
+                            listeInvitation.add(invitation);
+                            //reste à informé alias2 de l’arrivée d’une
+                            //invitation de alias1
+                        }
+                    }
+
                     break;
 
                 default: //Renvoyer le texte recu convertit en majuscules :
