@@ -73,7 +73,7 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                     alias1 = cnx.getAlias();
                     alias2 = evenement.getArgument();
                     if (alias1.equals(alias2)) {
-                        System.out.println("Vous ne pouvez pas chatter avec vous-même");
+                        cnx.envoyer("Vous ne pouvez pas chatter avec vous-même");
                         break;
                     }
                     for (Invitation inv : listeInvitation) {
@@ -88,13 +88,13 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                                     break;
                                 }
                                 else{
-                                    System.out.println("Vous êtes déjà dans un salon privé avec "+alias2);
+                                    cnx.envoyer("Vous êtes déjà dans un salon privé avec "+alias2);
                                     break;
                                 }
                             }
                         }
                         else{
-                            System.out.println("Une invitation à déjà été envoyé à "+alias2);
+                            cnx.envoyer("Une invitation à déjà été envoyé à "+alias2);
                             break;
                         }
                     }
