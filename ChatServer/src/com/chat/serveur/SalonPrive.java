@@ -20,6 +20,14 @@ public class SalonPrive {
         this.guest = guest;
     }
 
+    public String getHost() {
+        return host;
+    }
+
+    public String getGuest() {
+        return guest;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;

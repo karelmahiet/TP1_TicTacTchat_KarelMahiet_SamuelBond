@@ -38,6 +38,7 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
         String msg, typeEvenement, aliasExpediteur;
         ServeurChat serveur = (ServeurChat) this.serveur;
         Vector<Invitation> listeInvitation = new Vector<>(); //pour stocké les invitations
+        Vector<SalonPrive> listeSalonPrive = new Vector<>(); //pour stocké les salons ouvert
 
         if (source instanceof Connexion) {
             cnx = (Connexion) source;
@@ -71,19 +72,42 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                     String alias1, alias2;
                     alias1 = cnx.getAlias();
                     alias2 = evenement.getArgument();
+                    if (alias1.equals(alias2)) {
+                        System.out.println("Vous ne pouvez pas chatter avec vous-même");
+                        break;
+                    }
                     for (Invitation inv : listeInvitation) {
-                        if (inv.getHost().equals(alias1) && inv.getGuest().equals(alias2)) {
+                        //si invitation crée
+                        if ((inv.getHost().equals(alias1) && inv.getGuest().equals(alias2)) || (inv.getGuest().equals(alias1) && inv.getHost().equals(alias2))) {
                             //crée le salon privé
-                            break;
+                            SalonPrive salonPrive = new SalonPrive(alias1, alias2);
+                            SalonPrive salonTemp = new SalonPrive(alias2, alias1);
+                            for (SalonPrive salon : listeSalonPrive) {
+                                if (!salon.equals(salonPrive) && !salon.equals(salonTemp)){
+                                    listeSalonPrive.add(salonPrive);
+                                    break;
+                                }
+                                else{
+                                    System.out.println("Vous êtes déjà dans un salon privé avec "+alias2);
+                                    break;
+                                }
+                            }
                         }
                         else{
-                            Invitation invitation = new Invitation(alias1, alias2);
-                            listeInvitation.add(invitation);
-                            //reste à informé alias2 de l’arrivée d’une
-                            //invitation de alias1
+                            System.out.println("Une invitation à déjà été envoyé à "+alias2);
+                            break;
                         }
                     }
-
+                    Invitation invitation = new Invitation(alias1, alias2);
+                    listeInvitation.add(invitation);
+                    //informé alias2 de l’arrivée d’une invitation de alias1
+                    for (Connexion c : serveur.connectes) {
+                        if (c.getAlias().equals(alias2)) {
+                            c.envoyer(alias1 +" vous a envoyé une invitation à un chat privé (JOIN/DECLINE alias " +
+                                    "pour accepter ou refuser)");
+                            break;
+                        }
+                    }
                     break;
 
                 default: //Renvoyer le texte recu convertit en majuscules :
