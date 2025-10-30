@@ -1,6 +1,7 @@
 package com.chat.serveur;
 
 import com.commun.evenement.Evenement;
+import com.commun.evenement.EvenementUtil;
 import com.commun.evenement.GestionnaireEvenement;
 import com.commun.net.Connexion;
 
@@ -16,6 +17,8 @@ import java.util.Vector;
  */
 public class GestionnaireEvenementServeur implements GestionnaireEvenement {
     private Serveur serveur;
+    Vector<Invitation> listeInvitation = new Vector<>(); //pour stocké les invitations
+    Vector<SalonPrive> listeSalonPrive = new Vector<>(); //pour stocké les salons ouvert
 
     /**
      * Construit un gestionnaire d'événements pour un serveur.
@@ -35,10 +38,8 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
     public void traiter(Evenement evenement) {
         Object source = evenement.getSource();
         Connexion cnx;
-        String msg, typeEvenement, aliasExpediteur;
+        String msg, typeEvenement, aliasExpediteur, alias1, alias2;
         ServeurChat serveur = (ServeurChat) this.serveur;
-        Vector<Invitation> listeInvitation = new Vector<>(); //pour stocké les invitations
-        Vector<SalonPrive> listeSalonPrive = new Vector<>(); //pour stocké les salons ouvert
 
         if (source instanceof Connexion) {
             cnx = (Connexion) source;
@@ -69,7 +70,6 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                     break;
 
                 case "JOIN":
-                    String alias1, alias2;
                     alias1 = cnx.getAlias();
                     alias2 = evenement.getArgument();
                     if (alias1.equals(alias2)) {
@@ -82,16 +82,23 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                             //crée le salon privé
                             SalonPrive salonPrive = new SalonPrive(alias1, alias2);
                             SalonPrive salonTemp = new SalonPrive(alias2, alias1);
-                            for (SalonPrive salon : listeSalonPrive) {
-                                if (!salon.equals(salonPrive) && !salon.equals(salonTemp)){
-                                    listeSalonPrive.add(salonPrive);
-                                    break;
-                                }
-                                else{
-                                    cnx.envoyer("Vous êtes déjà dans un salon privé avec "+alias2);
-                                    break;
+                            if (listeSalonPrive.isEmpty()) {
+                                listeSalonPrive.add(salonPrive);
+                                break;
+                            }
+                            else {
+                                for (SalonPrive salon : listeSalonPrive) {
+                                    if ((!salon.equals(salonPrive) && !salon.equals(salonTemp))){
+                                        listeSalonPrive.add(salonPrive);
+                                        break;
+                                    }
+                                    else{
+                                        cnx.envoyer("Vous êtes déjà dans un salon privé avec "+alias2);
+                                        break;
+                                    }
                                 }
                             }
+
                         }
                         else{
                             cnx.envoyer("Une invitation à déjà été envoyé à "+alias2);
@@ -103,9 +110,58 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                     //informé alias2 de l’arrivée d’une invitation de alias1
                     for (Connexion c : serveur.connectes) {
                         if (c.getAlias().equals(alias2)) {
-                            c.envoyer(alias1 +" vous a envoyé une invitation à un chat privé (JOIN/DECLINE alias " +
+                            c.envoyer(alias1 +" vous a envoye une invitation à un chat prive (JOIN/DECLINE alias " +
                                     "pour accepter ou refuser)");
                             break;
+                        }
+                    }
+                    break;
+                case "DECLINE":
+                    alias1 = cnx.getAlias();
+                    alias2 = evenement.getArgument();
+                    for (Invitation inv : listeInvitation) {
+                        if (inv.getHost().equals(alias2) && inv.getGuest().equals(alias1)){
+                            for (Connexion c : serveur.connectes) {
+                                if (c.getAlias().equals(alias2)) {
+                                    c.envoyer(alias1 +" a refuse/annule l'invitation a chatter en prive.");
+                                    break;
+                                }
+                            }
+                            listeInvitation.remove(inv);
+                        }
+                        else{
+                            cnx.envoyer("Vous n'avez pas reçu d'invitation de la part de " +alias2);
+                            break;
+                        }
+                    }
+                case "INV":
+                    alias1 = cnx.getAlias();
+                    for (Invitation inv : listeInvitation) {
+                        if (inv.getGuest().equals(alias1)){
+                            cnx.envoyer(inv.getHost());
+                        }
+                    }
+                    break;
+
+                case "PRV":
+                    //utilisation d'une fonction déjà présente pour extraire le message
+                    String[] test = EvenementUtil.extraireInfosEvenement(evenement.getArgument());
+                    alias1 = cnx.getAlias();
+                    alias2 = test[0];
+                    msg = test[1];
+                    SalonPrive salonTemp1 = new SalonPrive(alias2, alias1);
+                    SalonPrive salonTemp2 = new SalonPrive(alias1, alias2);
+                    for (SalonPrive salon : listeSalonPrive) {
+                        if (salon.equals(salonTemp1) || salon.equals(salonTemp2)){
+                            for (Connexion c : serveur.connectes) {
+                                if (c.getAlias().equals(alias2)) {
+                                    c.envoyer(alias1 +"> " + msg);
+                                    break;
+                                }
+                            }
+                        }
+                        else{
+                            cnx.envoyer("Le salon n'existe de pas");
                         }
                     }
                     break;
