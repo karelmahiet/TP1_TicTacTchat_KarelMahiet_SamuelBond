@@ -20,6 +20,7 @@ import java.util.Vector;
  * @version 1.0
  * @since 2023-09-01
  */
+@SuppressWarnings("LanguageDetectionInspection")
 public class Serveur implements Lecteur {
 
     //Liste des connectés au serveur :

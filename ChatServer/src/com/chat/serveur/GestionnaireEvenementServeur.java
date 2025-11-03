@@ -1,8 +1,13 @@
 package com.chat.serveur;
 
 import com.commun.evenement.Evenement;
+import com.commun.evenement.EvenementUtil;
 import com.commun.evenement.GestionnaireEvenement;
 import com.commun.net.Connexion;
+
+import java.util.Vector;
+
+import static com.chat.serveur.Invitation.envoyerInvitation;
 
 /**
  * Cette classe représente un gestionnaire d'événement d'un serveur. Lorsqu'un serveur reçoit un texte d'un client,
@@ -14,6 +19,8 @@ import com.commun.net.Connexion;
  */
 public class GestionnaireEvenementServeur implements GestionnaireEvenement {
     private Serveur serveur;
+    Vector<Invitation> listeInvitation = new Vector<>(); //pour stocké les invitations
+    Vector<SalonPrive> listeSalonPrive = new Vector<>(); //pour stocké les salons ouvert
 
     /**
      * Construit un gestionnaire d'événements pour un serveur.
@@ -33,7 +40,8 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
     public void traiter(Evenement evenement) {
         Object source = evenement.getSource();
         Connexion cnx;
-        String msg, typeEvenement, aliasExpediteur;
+        String msg, typeEvenement, aliasExpediteur, host, guest;
+        SalonPrive salonTemp1, salonTemp2;
         ServeurChat serveur = (ServeurChat) this.serveur;
 
         if (source instanceof Connexion) {
@@ -64,6 +72,143 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                     serveur.ajouterHistorique(messageComplet);
                     break;
 
+                case "JOIN":
+                    host = cnx.getAlias();
+                    guest = evenement.getArgument();
+                    boolean salonExiste = false;
+                    boolean invitationExiste = false;
+                    boolean invite = false;
+                    int positionInv = 0;
+                    SalonPrive salonPrive = new SalonPrive(host, guest);
+                    SalonPrive salonTemp = new SalonPrive(guest, host);
+                    Invitation invitation = new Invitation(host, guest);
+                    Invitation invitee = new Invitation(guest, host);
+                    if (host.equals(guest)) {
+                        cnx.envoyer("Vous ne pouvez pas chatter avec vous-même");
+                        break;
+                    }
+                    if (listeInvitation.isEmpty()) {
+                        if (listeSalonPrive.isEmpty()) {
+                            listeInvitation.add(invitation);
+                            envoyerInvitation(serveur, host, guest);
+                            break;
+                        }else {
+                            for (SalonPrive salon : listeSalonPrive) {
+                                if ((salon.equals(salonPrive) || salon.equals(salonTemp))){
+                                    salonExiste = true;
+                                    break;
+                                }
+                            }
+                            if (salonExiste) {
+                                cnx.envoyer("Vous êtes déjà dans un salon privé avec "+ guest);
+                                break;
+                            }else {
+                                listeInvitation.add(invitation);
+                                envoyerInvitation(serveur, host, guest);
+                            }
+
+                        }
+                    }
+                    else{
+                        for (Invitation inv : listeInvitation) {
+                            if (inv.equals(invitation)){
+                                invitationExiste = true;
+                                break;
+                            } else if (inv.equals(invitee)) {
+                                invite = true;
+                                positionInv = listeInvitation.indexOf(inv);
+                                break;
+                            }
+                        }
+
+                        if (invitationExiste){
+                            cnx.envoyer("Vous avez déjà envoyé une invitation à " + guest);
+                            break;
+                        } else if (invite) {
+                            listeSalonPrive.add(salonPrive);
+                            listeInvitation.remove(positionInv);
+                            cnx.envoyer("Vous êtes maintenant dans un salon privé avec " + guest);
+                            for (Connexion c : serveur.connectes) {
+                                if (c.getAlias().equals(guest)) {
+                                    c.envoyer("Vous êtes maintenant dans un salon privé avec " + host);
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                    break;
+
+                case "DECLINE":
+                    host = cnx.getAlias();
+                    guest = evenement.getArgument();
+                    for (Invitation inv : listeInvitation) {
+                        if (inv.getHost().equals(guest) && inv.getGuest().equals(host)){
+                            for (Connexion c : serveur.connectes) {
+                                if (c.getAlias().equals(guest)) {
+                                    c.envoyer(host +" a refuse/annule l'invitation a chatter en prive.");
+                                    break;
+                                }
+                            }
+                            listeInvitation.remove(inv);
+                            break;
+                        }
+                        else{
+                            cnx.envoyer("Vous n'avez pas reçu d'invitation de la part de " + guest);
+                            break;
+                        }
+                    }
+                    break;
+                case "INV":
+                    host = cnx.getAlias();
+                    for (Invitation inv : listeInvitation) {
+                        if (inv.getGuest().equals(host)){
+                            cnx.envoyer(inv.getHost());
+                        }
+                    }
+                    break;
+
+                case "PRV":
+                    //utilisation d'une fonction déjà présente pour extraire le message
+                    String[] test = EvenementUtil.extraireInfosEvenement(evenement.getArgument());
+                    host = cnx.getAlias();
+                    guest = test[0];
+                    msg = test[1];
+                    salonTemp1 = new SalonPrive(guest, host);
+                    salonTemp2 = new SalonPrive(host, guest);
+                    for (SalonPrive salon : listeSalonPrive) {
+                        if (salon.equals(salonTemp1) || salon.equals(salonTemp2)){
+                            for (Connexion c : serveur.connectes) {
+                                if (c.getAlias().equals(guest)) {
+                                    c.envoyer(host +"> " + msg);
+                                    break;
+                                }
+                            }
+                        }
+                        else{
+                            cnx.envoyer("Le salon n'existe de pas");
+                        }
+                    }
+                    break;
+                case "QUIT":
+                    host = cnx.getAlias();
+                    guest = evenement.getArgument();
+                    salonTemp1 = new SalonPrive(guest, host);
+                    salonTemp2 = new SalonPrive(host, guest);
+                    for (SalonPrive salon : listeSalonPrive) {
+                        if (salon.equals(salonTemp1) || salon.equals(salonTemp2)){
+                            listeSalonPrive.remove(salon);
+                            cnx.envoyer("Vous avez quitté le salon privé avec " + guest);
+                            for (Connexion c : serveur.connectes) {
+                                if (c.getAlias().equals(guest)) {
+                                    c.envoyer(host + " a quitter le salon privé");
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                    break;
                 default: //Renvoyer le texte recu convertit en majuscules :
                     msg = (evenement.getType() + " " + evenement.getArgument()).toUpperCase();
                     cnx.envoyer(msg);
