@@ -1,5 +1,7 @@
 package com.chat.serveur;
 
+import com.commun.net.Connexion;
+
 import java.util.Objects;
 
 /**
@@ -38,5 +40,16 @@ public class Invitation {
     @Override
     public int hashCode() {
         return Objects.hash(host, guest);
+    }
+
+    // J'ai crée une méthode pour facilité la lisibilité du code
+    public static void envoyerInvitation(ServeurChat serveur, String host, String guest)  {
+        for (Connexion c : serveur.connectes) {
+            if (c.getAlias().equals(guest)) {
+                c.envoyer(host +" vous a envoye une invitation à un chat prive (JOIN/DECLINE alias " +
+                        "pour accepter ou refuser)");
+                break;
+            }
+        }
     }
 }
