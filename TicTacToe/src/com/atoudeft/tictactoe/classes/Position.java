@@ -14,4 +14,17 @@ public final class Position {
     public int getColonne() { return colonne; }
 
     @Override public String toString() { return "(" + ligne + "," + colonne + ")"; }
+
+    //Q4 - 4.2: equals
+    public boolean equals(Object o){
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Position p = (Position) o;
+        return this.ligne == p.ligne && this.colonne == p.colonne;
+
+    }
+    //hashFunction pour gerer collections
+    public int hashCode(){
+       return 31 * ligne + colonne;
+    }
 }
