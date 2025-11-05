@@ -3,7 +3,7 @@ package com.chat.serveur;
 import java.util.Objects;
 
 /**
- * Cette classe représente un Salon privé // Question 3
+ * Cette classe représente un Salon privé //Question 3
  *
  * @author Samuel Bond
  * @version 1.0
@@ -32,7 +32,10 @@ public class SalonPrive {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         SalonPrive that = (SalonPrive) o;
-        return Objects.equals(host, that.host) && Objects.equals(guest, that.guest);
+        //Sam jai ajouté le || pcq sinon ca comparait pas si c'était dans le désordre,
+        //je voulais que SalonPrive(A,B) = SalonPrive(B,A)
+        return (Objects.equals(host, that.host) && Objects.equals(guest, that.guest))
+                || (Objects.equals(host, that.guest) && Objects.equals(guest, that.host)); //ici
     }
 
     @Override

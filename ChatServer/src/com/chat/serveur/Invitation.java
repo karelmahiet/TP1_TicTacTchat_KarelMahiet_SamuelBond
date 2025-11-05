@@ -5,7 +5,7 @@ import com.commun.net.Connexion;
 import java.util.Objects;
 
 /**
- * Cette classe représente une invitation pour chatter en privé // Question 3
+ * Cette classe représente une invitation pour chatter en privé //Question 3
  *
  * @author Samuel Bond
  * @version 1.0
@@ -42,7 +42,7 @@ public class Invitation {
         return Objects.hash(host, guest);
     }
 
-    // J'ai crée une méthode pour facilité la lisibilité du code
+    //J'ai crée une méthode pour facilité la lisibilité du code
     public static void envoyerInvitation(ServeurChat serveur, String host, String guest)  {
         for (Connexion c : serveur.connectes) {
             if (c.getAlias().equals(guest)) {

@@ -84,7 +84,7 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                     Invitation invitation = new Invitation(host, guest);
                     Invitation invitee = new Invitation(guest, host);
                     if (host.equals(guest)) {
-                        cnx.envoyer("Vous ne pouvez pas chatter avec vous-même");
+                        cnx.envoyer("Vous ne pouvez pas chatter avec vous-meme");
                         break;
                     }
                     if (listeInvitation.isEmpty()) {
@@ -100,7 +100,7 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                                 }
                             }
                             if (salonExiste) {
-                                cnx.envoyer("Vous êtes déjà dans un salon privé avec "+ guest);
+                                cnx.envoyer("Vous etes deja dans un salon prive avec "+ guest);
                                 break;
                             }else {
                                 listeInvitation.add(invitation);
@@ -122,15 +122,15 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                         }
 
                         if (invitationExiste){
-                            cnx.envoyer("Vous avez déjà envoyé une invitation à " + guest);
+                            cnx.envoyer("Vous avez deja envoye une invitation a " + guest);
                             break;
                         } else if (invite) {
                             listeSalonPrive.add(salonPrive);
                             listeInvitation.remove(positionInv);
-                            cnx.envoyer("Vous êtes maintenant dans un salon privé avec " + guest);
+                            cnx.envoyer("Vous etes maintenant dans un salon prive avec " + guest);
                             for (Connexion c : serveur.connectes) {
                                 if (c.getAlias().equals(guest)) {
-                                    c.envoyer("Vous êtes maintenant dans un salon privé avec " + host);
+                                    c.envoyer("Vous etes maintenant dans un salon prive avec " + host);
                                     break;
                                 }
                             }
@@ -198,10 +198,10 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                     for (SalonPrive salon : listeSalonPrive) {
                         if (salon.equals(salonTemp1) || salon.equals(salonTemp2)){
                             listeSalonPrive.remove(salon);
-                            cnx.envoyer("Vous avez quitté le salon privé avec " + guest);
+                            cnx.envoyer("Vous avez quitte le salon prive avec " + guest);
                             for (Connexion c : serveur.connectes) {
                                 if (c.getAlias().equals(guest)) {
-                                    c.envoyer(host + " a quitter le salon privé");
+                                    c.envoyer(host + " a quitter le salon prive");
                                     break;
                                 }
                             }
