@@ -50,4 +50,18 @@ public final class Plateau {
         //si rien
         return List.of();
     }
+
+    public String toString(){
+        StringBuilder sb = new StringBuilder();//encore un sb lol
+
+        for (int i = 0; i<3;i++){
+            for (int j = 0; j<3;j++){
+                Symbole s = grille[i][j];
+                sb.append(s==null ? ".": s.name());//? et : sont un genre de if else
+                if (j<2) sb.append(" ");
+            }
+            sb.append("\n");
+        }
+        return sb.toString().trim();
+    }
 }

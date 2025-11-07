@@ -27,10 +27,29 @@ public final class Partie {
         this(Symbole.X);
     }
 
+    //Q4.6
     public boolean jouer(Symbole symbole, Position position) {
-        throw new MethodeNonImplementeeException("***** Vous n'avez pas encore implemente la methode : "
-                +Thread.currentThread().getStackTrace()[1].getMethodName()
-                +"() de la classe "+this.getClass().getName());
+        if (statut != StatutPartie.EN_COURS){
+            return false;
+        }
+        //check si bon joueur et si partie en cours
+        if (symbole != joueurCourant){
+            return false;
+        }
+
+        Coup coup = new Coup(position, symbole);
+        boolean coupValide = plateau.placer(coup);
+
+        if (!coupValide){
+            return false;
+        }
+        mettreAJourStatutApresCoup();
+
+        if(statut == StatutPartie.EN_COURS){
+            joueurCourant = (joueurCourant == Symbole.X) ? Symbole.O : Symbole.X; //genre de if else, jai appris cela avec ce tp
+            //la ligne dit que si la partie est pas finie, on change le joueur courant pour l<autre
+        }
+        return true;//coup joue
     }
     public boolean isPartieEnCours() {
         if (statut != StatutPartie.EN_COURS) {
