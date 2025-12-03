@@ -1,8 +1,5 @@
-Bonjour Moumène,
+NOTES TP2
 
-Voici notre code pour le TP1.
-
-Nous avons aimé travailler sur ce projet, nous avons appris des choses sur Java en dehors du cours.
-C'est pratique!
-
-Merci
+2025-12-02
+1.3 semble deja etre fonctionnel, le code etait deja fourni.
+Question 1 terminer.
