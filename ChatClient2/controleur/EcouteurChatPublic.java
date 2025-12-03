@@ -3,6 +3,7 @@ package controleur;
 import com.chat.client.ClientChat;
 import vue.PanneauChat;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -22,6 +23,6 @@ public class EcouteurChatPublic implements ActionListener {
     }
     @Override
     public void actionPerformed(ActionEvent evt) {
-        //à compléter
+
     }
 }
