@@ -1,6 +1,7 @@
 package vue;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionListener;
 
 /**
@@ -14,14 +15,25 @@ public class PanneauChat extends JPanel {
     protected JTextField champDeSaisie;
 
     public PanneauChat() {
-        //à compléter.
+        //q2.1
+        this.setLayout(new BorderLayout());
+
+        zoneChat= new JTextArea();
+        zoneChat.setEditable(false);
+        champDeSaisie = new JTextField();
+        JScrollPane scrollPane = new JScrollPane(zoneChat);
+        this.add(scrollPane, BorderLayout.CENTER);
+        this.add(champDeSaisie, BorderLayout.SOUTH);
     }
 
     public void ajouter(String msg) {
         zoneChat.append("\n"+msg);
     }
     public void setEcouteur(ActionListener ecouteur) {
-        //Enregistrer l'écouteur auprès du champ de saisie
+        //q2.3
+        if (champDeSaisie != null) {
+            champDeSaisie.addActionListener(ecouteur);
+        }
     }
 
     public void vider() {
