@@ -27,7 +27,7 @@ public class EcouteurListeConnectes extends MouseAdapter {
             String alias = list.getSelectedValue();
 
             if(alias != null) {
-                clientChat.envoyer(("JOIN" + alias));
+                clientChat.envoyer(("JOIN " + alias));
             }
         }
     }

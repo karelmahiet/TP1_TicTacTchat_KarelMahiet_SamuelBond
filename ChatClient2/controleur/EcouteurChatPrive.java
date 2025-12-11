@@ -28,20 +28,20 @@ public class EcouteurChatPrive extends EcouteurChatPublic {
         //je vais expliquer un peu pour demeler tout ca
         if("ACCEPTER".equals(commande)){
             //Inviter et Accpeter est la meme commande pour le serveur
-            clientChat.envoyer("TTT"+alias);
+            clientChat.envoyer("TTT "+alias);
         } else if ("REFUSER".equals(commande)) {
-            clientChat.envoyer("DECLINE TTT"+alias);
+            clientChat.envoyer("DECLINE TTT "+alias);
             //cest du texte aussi
         } else if (evt.getSource() instanceof JTextField) {
             String texte = ((JTextField) evt.getSource()).getText();
             if(!texte.isEmpty()) {
                 if("QUIT".equals(texte.toUpperCase())){
-                    clientChat.envoyer("QUIT"+alias);
+                    clientChat.envoyer("QUIT "+alias);
                 } else if ("ABANDON".equals(texte.toUpperCase())) {
-                    clientChat.envoyer("ABANDON" + alias);
+                    clientChat.envoyer("ABANDON " + alias);
                 }else {
                     //message prive normal
-                    clientChat.envoyer("PRV" + alias + " "+texte);
+                    clientChat.envoyer("PRV " + alias + " "+texte);
                     panneauChat.ajouter("MOI>>"+texte);
                 }
                 ((JTextField) evt.getSource()).setText("");

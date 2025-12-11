@@ -26,9 +26,9 @@ public class EcouteurInvitations implements ActionListener {
 
         for(String alias : selection) {
             if ("ACCEPTER".equals(action)){
-                clientChat.envoyer("JOIN" + alias);
+                clientChat.envoyer("JOIN " + alias);
             } else if ("REFUSER".equals(action)){
-                clientChat.envoyer("DECLINE" + alias);
+                clientChat.envoyer("DECLINE " + alias);
             }
             panneauInvitations.retirerInvitationRecue(alias);
         }
