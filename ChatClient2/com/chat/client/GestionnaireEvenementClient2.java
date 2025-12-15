@@ -157,13 +157,13 @@ public class GestionnaireEvenementClient2 implements GestionnaireEvenement {
                     EcouteurTicTacToe ecouteur = new EcouteurTicTacToe(client, str);
                     panneauTicTacToe.setEcouteurTicTacToe(ecouteur);
 
-                    String titre = "Vous (" + str + ") contre " + arg;
+                    String titre = "Moi (" + str + ") contre " + arg;
 
                     SwingUtilities.invokeLater(() -> {
 
                         FenetreTicTacToe fenetreTTT = new FenetreTicTacToe(panneauTicTacToe, titre);
                         fenetreTTT.setContentPane(panneauTicTacToe);
-                        fenetreTTT.pack();
+                        //fenetreTTT.pack();  //?? Sam, cela pack la fenetre, cest pour ca qu<elle s<ouvre en minuscule
                         fenetreTTT.setLocationRelativeTo(null);
                         fenetreTTT.setVisible(true);
                     });
@@ -182,7 +182,10 @@ public class GestionnaireEvenementClient2 implements GestionnaireEvenement {
                         System.out.println(etat);
                     }
                     break;
-                case "TTT_END": //partie terminée
+                case "TTT_END": //partie fine
+                    arg = evenement.getArgument();
+                    fenetre = (MainFrame)panneauPrincipal.getTopLevelAncestor();
+                    JOptionPane.showMessageDialog(fenetre, arg);
                     break;
                 case "ABANDON":
                     arg = evenement.getArgument();
@@ -190,7 +193,7 @@ public class GestionnaireEvenementClient2 implements GestionnaireEvenement {
                     JOptionPane.showMessageDialog(fenetre,arg+" a abandonné la partie d'échecs");
                     System.out.println(evenement.getArgument());
                     ((ClientChat)client).setEtatPartieEchecs(null);
-                    //On détruit la fenêtre de jeu d'échecs :
+                    //on détruit la fenêtre de jeu d'échecs :
                     panneauPrincipal.setFenetreTicTacToe(arg,null);
                     break;
                 /******************* TRAITEMENT PAR DÉFAUT *******************/

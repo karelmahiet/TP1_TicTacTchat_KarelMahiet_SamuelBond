@@ -18,11 +18,10 @@ public class EtatPartieTicTacToe extends Observable {
 
         if (strCoup == null) return false;
 
-        // 4.2 - Découper la chaîne
+        //q4.2
         String[] parties = strCoup.split(" ");
         if (parties.length != 3) return false;
 
-        // 4.2 - Organiser les données
         char symbole = parties[0].charAt(0);
         int ligne;
         int colonne;
@@ -34,15 +33,12 @@ public class EtatPartieTicTacToe extends Observable {
             return false;
         }
 
-        // 4.2 Vérifications
         if (symbole != 'X' && symbole != 'O') return false;
         if (ligne < 0 || ligne > 2 || colonne < 0 || colonne > 2) return false;
         if (etatPlateau[ligne][colonne] != '.') return false;
 
-        // 4.2 Appliquer le coup
         etatPlateau[ligne][colonne] = symbole;
 
-        //4.2 Notifier les observateurs
         notifierObservateurs();
 
 
