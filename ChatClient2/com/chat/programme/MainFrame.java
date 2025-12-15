@@ -42,7 +42,7 @@ public class MainFrame extends JFrame implements Runnable, Observateur {
     private void configurerFenetrePrincipale() {
         //Configuration de la fenêtre
         this.setSize(1400,900);
-        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//pour exit
     }
 
     private void initialiserComposants() {

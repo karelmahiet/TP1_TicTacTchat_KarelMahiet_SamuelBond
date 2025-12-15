@@ -16,7 +16,7 @@ public class FenetreTicTacToe extends JFrame {
     private void configurerFenetrePrincipale() {
         //Configuration de la fenêtre
         this.setSize(800,800);
-        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);//pour close
     }
 
     private void initialiserComposants() {

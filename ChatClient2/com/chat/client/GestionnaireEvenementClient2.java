@@ -186,7 +186,8 @@ public class GestionnaireEvenementClient2 implements GestionnaireEvenement {
                     arg = evenement.getArgument();
                     fenetre = (MainFrame)panneauPrincipal.getTopLevelAncestor();
                     JOptionPane.showMessageDialog(fenetre, arg);
-                    break;
+
+
                 case "ABANDON":
                     arg = evenement.getArgument();
                     fenetre = (MainFrame)panneauPrincipal.getTopLevelAncestor();
