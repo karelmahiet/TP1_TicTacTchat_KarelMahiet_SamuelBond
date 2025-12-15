@@ -5,6 +5,7 @@ import com.chat.commun.evenement.GestionnaireEvenement;
 import com.chat.commun.net.Connexion;
 import com.chat.tictactoe.EtatPartieTicTacToe;
 import com.chat.programme.MainFrame;
+import controleur.EcouteurTicTacToe;
 import vue.FenetreTicTacToe;
 import vue.PanneauPrincipal;
 import vue.PanneauTicTacToe;
@@ -152,6 +153,20 @@ public class GestionnaireEvenementClient2 implements GestionnaireEvenement {
                     System.out.println(client.getEtatPartieEchecs());
                     PanneauTicTacToe panneauTicTacToe = new PanneauTicTacToe(client.getEtatPartieEchecs());
                     //à compléter
+
+                    EcouteurTicTacToe ecouteur = new EcouteurTicTacToe(client, str);
+                    panneauTicTacToe.setEcouteurTicTacToe(ecouteur);
+
+                    String titre = "Vous (" + str + ") contre " + arg;
+
+                    SwingUtilities.invokeLater(() -> {
+
+                        FenetreTicTacToe fenetreTTT = new FenetreTicTacToe(panneauTicTacToe, titre);
+                        fenetreTTT.setContentPane(panneauTicTacToe);
+                        fenetreTTT.pack();
+                        fenetreTTT.setLocationRelativeTo(null);
+                        fenetreTTT.setVisible(true);
+                    });
 
                     panneauPrincipal.setFenetreTicTacToe(arg,fenetreTicTacToe);
                     break;
