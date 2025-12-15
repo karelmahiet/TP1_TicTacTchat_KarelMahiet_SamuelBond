@@ -29,9 +29,12 @@ public class ServiceImages {
 				break;
 		}
 		System.out.println("Nom fichier de l'image : "+nomFichier);
+        System.out.println("Working dir = " + System.getProperty("user.dir"));
+        java.io.File f = new java.io.File("ChatClient2/imgs/" + nomFichier);
+        System.out.println("Existe? " + f.exists() + "  path=" + f.getAbsolutePath());
 		if (nomFichier==null)
 			return null;
-		return new ImageIcon("imgs/"+nomFichier);
+		return new ImageIcon("ChatClient2/imgs/"+nomFichier);
 	}
 	public static ImageIcon getImage(String nomFichier) {
 		return new ImageIcon("imgs/"+nomFichier);
