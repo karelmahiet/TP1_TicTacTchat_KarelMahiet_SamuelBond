@@ -1,5 +1,4 @@
 NOTES TP2
 
-2025-12-02
-1.3 semble deja etre fonctionnel, le code etait deja fourni.
-Question 1 terminer.
+Le TP2 est fonctionnel.
+Seul hic: le TTT ne permet pas de faire un coup gagnant (?).
